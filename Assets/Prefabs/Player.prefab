@@ -35,6 +35,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4700347953183652}
   - component: {fileID: 54027508876471312}
+  - component: {fileID: 114529672918367770}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -147,7 +148,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: e8e8337effd39b147ab55d9275e5ab92, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -181,7 +182,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 3b8b842123dea2b43a396fc6b8a56cf9, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -230,6 +231,23 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 120
   m_CollisionDetection: 1
+--- !u!114 &114529672918367770
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1351350414123914}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b23d54ddc5acb5945b96006faf626f62, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  disabled: 0
+  maxMovementSpeed: 10
+  jumpPower: 500
+  jumpDelay: 0.4
+  jumpChainLimit: 3
+  extraGravity: 10
 --- !u!135 &135597338505949648
 SphereCollider:
   m_ObjectHideFlags: 1
