@@ -249,6 +249,8 @@ MonoBehaviour:
   jumpChainLimit: 3
   extraGravity: 10
   gun: {fileID: 4589927314014156}
+  projectilePrefab: {fileID: 1567404158020960, guid: f48e35f05d9b04f42bf4ba0227254891,
+    type: 2}
 --- !u!135 &135597338505949648
 SphereCollider:
   m_ObjectHideFlags: 1

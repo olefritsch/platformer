@@ -17,6 +17,7 @@ public class PlayerController : MonoBehaviour {
 
     [Header("Firing")]
     [SerializeField] Transform gun;
+    [SerializeField] GameObject projectilePrefab;
 
     private Rigidbody rb;
     private int playerNumber = 1;
@@ -41,6 +42,9 @@ public class PlayerController : MonoBehaviour {
     {
         if (disabled)
             return;
+
+        if (Input.GetButtonDown(playerId + " Shoot"))
+            Shoot();
     }
 
     private void FixedUpdate()
@@ -103,6 +107,15 @@ public class PlayerController : MonoBehaviour {
         float rotateSpeed = 0;
         float smoothAngle = Mathf.SmoothDampAngle(gun.eulerAngles.z, angle, ref rotateSpeed, 0.05f);
         gun.rotation = Quaternion.Euler(new Vector3(0, 0, smoothAngle));
+    }
+
+    private void Shoot()
+    {
+        if (!projectilePrefab)
+            return;
+
+        Vector3 instantiatePos = gun.transform.position + (1.1f * gun.transform.up);
+        Instantiate(projectilePrefab, instantiatePos, gun.transform.rotation);
     }
 
     private void Jump()
