@@ -15,6 +15,9 @@ public class PlayerController : MonoBehaviour {
     [SerializeField] int jumpChainLimit = 3;
     [SerializeField] float extraGravity = 10;
 
+    [Header("Firing")]
+    [SerializeField] Transform gun;
+
     private Rigidbody rb;
     private int playerNumber = 1;
     private string playerId;
@@ -53,6 +56,9 @@ public class PlayerController : MonoBehaviour {
 
         if (canJump && Input.GetButton(playerId + " Jump"))
             Jump();
+
+        // HandleJoystickControlledGunRotation();
+        HandleMouseControlledGunRotation();
     }
 
     private Vector3 CalculateMovementForce()
@@ -68,6 +74,35 @@ public class PlayerController : MonoBehaviour {
 
         float movementForce = inputMovementSpeed * speedModifier * 250 * Time.deltaTime;
         return new Vector3(movementForce, 0, 0);
+    }
+
+    private void HandleJoystickControlledGunRotation()
+    {
+        float inputHorizontal = Input.GetAxis(playerId + " Gun Horizontal");
+        float inputVertical = Input.GetAxis(playerId + " Gun Vertical");
+
+        if (inputHorizontal != 0 || inputVertical != 0)
+        {
+            float angle = Mathf.Atan2(-inputHorizontal, inputVertical) * Mathf.Rad2Deg;
+            float rotateSpeed = 0;
+            float smoothAngle = Mathf.SmoothDampAngle(gun.eulerAngles.z, angle, ref rotateSpeed, 0.08f);
+            gun.rotation = Quaternion.Euler(new Vector3(0, 0, smoothAngle));
+        }
+    }
+
+    private void HandleMouseControlledGunRotation()
+    {
+        Vector3 mousePos = Input.mousePosition;
+        mousePos.z = Camera.main.transform.position.z;
+        Vector3 objectPos = Camera.main.WorldToScreenPoint(gun.position);
+
+        mousePos.x = mousePos.x - objectPos.x;
+        mousePos.y = mousePos.y - objectPos.y;
+
+        float angle = Mathf.Atan2(mousePos.y, mousePos.x) * Mathf.Rad2Deg - 90;
+        float rotateSpeed = 0;
+        float smoothAngle = Mathf.SmoothDampAngle(gun.eulerAngles.z, angle, ref rotateSpeed, 0.05f);
+        gun.rotation = Quaternion.Euler(new Vector3(0, 0, smoothAngle));
     }
 
     private void Jump()

@@ -248,6 +248,7 @@ MonoBehaviour:
   jumpDelay: 0.4
   jumpChainLimit: 3
   extraGravity: 10
+  gun: {fileID: 4589927314014156}
 --- !u!135 &135597338505949648
 SphereCollider:
   m_ObjectHideFlags: 1
