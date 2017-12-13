@@ -19,7 +19,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4589927314014156}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Gun
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -36,7 +36,7 @@ GameObject:
   - component: {fileID: 4700347953183652}
   - component: {fileID: 54027508876471312}
   - component: {fileID: 114529672918367770}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -54,7 +54,7 @@ GameObject:
   - component: {fileID: 33556447461702830}
   - component: {fileID: 135597338505949648}
   - component: {fileID: 23572854752021252}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Body
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -72,7 +72,7 @@ GameObject:
   - component: {fileID: 33742480722044680}
   - component: {fileID: 136000246424148954}
   - component: {fileID: 23850471726638022}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Barrel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -251,6 +251,7 @@ MonoBehaviour:
   gun: {fileID: 4589927314014156}
   projectilePrefab: {fileID: 1567404158020960, guid: f48e35f05d9b04f42bf4ba0227254891,
     type: 2}
+  ability: {fileID: 11400000, guid: 4e6b36b82b917454292c6d7569104532, type: 2}
 --- !u!135 &135597338505949648
 SphereCollider:
   m_ObjectHideFlags: 1

@@ -6,7 +6,7 @@ public class PlayerController : MonoBehaviour {
     const string GroundIdentifierTag = "Ground";
 
     [Header("Testing Only")]        // For testing purposes only,
-    public bool disabled;           // Disables player controls                 
+    public bool disabled;           // Disables player controls
 
     [Header("Movement")]
     [SerializeField] float maxMovementSpeed = 10f;
@@ -18,6 +18,19 @@ public class PlayerController : MonoBehaviour {
     [Header("Firing")]
     [SerializeField] Transform gun;
     [SerializeField] GameObject projectilePrefab;
+    [SerializeField] Ability ability;
+    
+    public Ability Ability
+    {
+        get { return ability;  }
+        set
+        {
+            if (ability)
+                Debug.LogWarning("Ability for Player " + playerId + " has been overridden through Ability setter");
+
+            ability = value;
+        }
+    }
 
     private Rigidbody rb;
     private int playerNumber = 1;
@@ -34,6 +47,9 @@ public class PlayerController : MonoBehaviour {
         playerId = "P" + playerNumber;
         rb = GetComponent<Rigidbody>();
 
+        if (Ability != null)
+            Ability.Initialize(this.gameObject);
+
         extraGravity *= -1;
     }
 
@@ -45,6 +61,9 @@ public class PlayerController : MonoBehaviour {
 
         if (Input.GetButtonDown(playerId + " Shoot"))
             Shoot();
+
+        if (Input.GetButtonDown(playerId + " Ability"))
+            UseAbility();
     }
 
     private void FixedUpdate()
@@ -109,15 +128,6 @@ public class PlayerController : MonoBehaviour {
         gun.rotation = Quaternion.Euler(new Vector3(0, 0, smoothAngle));
     }
 
-    private void Shoot()
-    {
-        if (!projectilePrefab)
-            return;
-
-        Vector3 instantiatePos = gun.transform.position + (1.1f * gun.transform.up);
-        Instantiate(projectilePrefab, instantiatePos, gun.transform.rotation);
-    }
-
     private void Jump()
     {
         if (Time.time - timeSinceLastJump > jumpDelay)
@@ -129,6 +139,20 @@ public class PlayerController : MonoBehaviour {
             if (jumpStreak >= jumpChainLimit)
                 canJump = false;
         }
+    }
+
+    private void Shoot()
+    {
+        if (!projectilePrefab)
+            return;
+
+        Vector3 instantiatePos = gun.transform.position + (1.1f * gun.transform.up);
+        Instantiate(projectilePrefab, instantiatePos, gun.transform.rotation);
+    }
+
+    private void UseAbility()
+    {
+        ability.TriggerAbility();
     }
 
     private void OnCollisionEnter(Collision collision)
