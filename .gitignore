@@ -34,9 +34,6 @@ ExportedObj/
 *.svd
 *.pdb
 
-# Unity3D generated meta files
-*.pidb.meta
-
 # Unity3D Generated File On Crash Reports
 sysinfo.txt
 
@@ -96,7 +93,6 @@ artifacts/
 *_p.c
 *_i.h
 *.ilk
-*.meta
 *.obj
 *.pch
 *.pgc
