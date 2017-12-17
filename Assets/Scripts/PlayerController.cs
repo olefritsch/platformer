@@ -1,9 +1,14 @@
 ﻿using UnityEngine;
+using Rewired;
 
 [RequireComponent(typeof(Rigidbody))]
 public class PlayerController : MonoBehaviour {
 
     const string GroundIdentifierTag = "Ground";
+
+    [HideInInspector]
+    public int playerId = 0;
+
 
     [Header("Testing Only")]        // For testing purposes only,
     public bool disabled;           // Disables player controls
@@ -32,21 +37,23 @@ public class PlayerController : MonoBehaviour {
         }
     }
 
+    private Player player;
     private Rigidbody rb;
-    private int playerNumber = 1;
-    private string playerId;
 
     private float timeSinceLastJump = 0;
     private int jumpStreak = 0;
     private bool canJump = true;
 
 
+    void Awake()
+    {
+        player = ReInput.players.GetPlayer(playerId);
+        rb = GetComponent<Rigidbody>();
+    }
+
     // Use this for initialization
     void Start()
     {
-        playerId = "P" + playerNumber;
-        rb = GetComponent<Rigidbody>();
-
         if (Ability != null)
             Ability.Initialize(this.gameObject);
 
@@ -59,10 +66,10 @@ public class PlayerController : MonoBehaviour {
         if (disabled)
             return;
 
-        if (Input.GetButtonDown(playerId + " Shoot"))
+        if (player.GetButtonDown("Fire"))
             Shoot();
 
-        if (Input.GetButtonDown(playerId + " Ability"))
+        if (player.GetButtonDown("Ability"))
             UseAbility();
     }
 
@@ -77,16 +84,16 @@ public class PlayerController : MonoBehaviour {
         if (extraGravity < 0)
             rb.AddForce(new Vector3(0, extraGravity, 0));
 
-        if (canJump && Input.GetButton(playerId + " Jump"))
+        if (canJump && player.GetButton("Jump"))
             Jump();
 
-        // HandleJoystickControlledGunRotation();
+        //HandleJoystickControlledGunRotation();
         HandleMouseControlledGunRotation();
     }
 
     private Vector3 CalculateMovementForce()
     {
-        float inputMovementSpeed = Input.GetAxis(playerId + " Movement");
+        float inputMovementSpeed = player.GetAxis("Movement");
         float currentMovementSpeed = rb.velocity.x;
         float speedModifier = 1;
 
@@ -101,8 +108,8 @@ public class PlayerController : MonoBehaviour {
 
     private void HandleJoystickControlledGunRotation()
     {
-        float inputHorizontal = Input.GetAxis(playerId + " Gun Horizontal");
-        float inputVertical = Input.GetAxis(playerId + " Gun Vertical");
+        float inputHorizontal = player.GetAxis("Gun Horizontal");
+        float inputVertical = player.GetAxis("Gun Vertical");
 
         if (inputHorizontal != 0 || inputVertical != 0)
         {
