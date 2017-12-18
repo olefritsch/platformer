@@ -9,7 +9,6 @@ public class PlayerController : MonoBehaviour {
     [HideInInspector]
     public int playerId = 0;
 
-
     [Header("Testing Only")]        // For testing purposes only,
     public bool disabled;           // Disables player controls
 
@@ -40,20 +39,18 @@ public class PlayerController : MonoBehaviour {
     private Player player;
     private Rigidbody rb;
 
+    private float movementInput;
     private float timeSinceLastJump = 0;
     private int jumpStreak = 0;
     private bool canJump = true;
-
-
-    void Awake()
-    {
-        player = ReInput.players.GetPlayer(playerId);
-        rb = GetComponent<Rigidbody>();
-    }
+    private bool isJumping;
 
     // Use this for initialization
     void Start()
     {
+        player = ReInput.players.GetPlayer(playerId);
+        rb = GetComponent<Rigidbody>();
+
         if (Ability != null)
             Ability.Initialize(this.gameObject);
 
@@ -66,11 +63,7 @@ public class PlayerController : MonoBehaviour {
         if (disabled)
             return;
 
-        if (player.GetButtonDown("Fire"))
-            Shoot();
-
-        if (player.GetButtonDown("Ability"))
-            UseAbility();
+        CheckInput();
     }
 
     private void FixedUpdate()
@@ -78,22 +71,33 @@ public class PlayerController : MonoBehaviour {
         if (disabled)
             return;
 
-        Vector3 movementForce = CalculateMovementForce();
+        Vector3 movementForce = CalculateMovementForce(movementInput);
         rb.AddForce(movementForce);
+
+        if (isJumping)
+            Jump();
 
         if (extraGravity < 0)
             rb.AddForce(new Vector3(0, extraGravity, 0));
-
-        if (canJump && player.GetButton("Jump"))
-            Jump();
 
         //HandleJoystickControlledGunRotation();
         HandleMouseControlledGunRotation();
     }
 
-    private Vector3 CalculateMovementForce()
+    private void CheckInput()
     {
-        float inputMovementSpeed = player.GetAxis("Movement");
+        movementInput = player.GetAxis("Movement");
+        isJumping = canJump && player.GetButton("Jump");
+
+        if (player.GetButtonDown("Fire"))
+            Shoot();
+
+        if (player.GetButtonDown("Ability"))
+            UseAbility();
+    }
+
+    private Vector3 CalculateMovementForce(float inputMovementSpeed)
+    {
         float currentMovementSpeed = rb.velocity.x;
         float speedModifier = 1;
 
