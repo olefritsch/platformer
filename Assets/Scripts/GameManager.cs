@@ -26,6 +26,7 @@ public class GameManager : MonoBehaviour {
     {
         players = new List<GameObject>();
         OnPlayerJoin();
+        OnPlayerJoin();
     }
 
     public void OnPlayerJoin()
@@ -35,7 +36,12 @@ public class GameManager : MonoBehaviour {
         
         // TODO: Allow players to choose abilities before game starts
         PlayerController player = playerObj.GetComponent<PlayerController>();
+
         player.Ability = abilities[0];
         player.Ability.Initialize(playerObj);
+
+        player.playerId = players.Count;
+        Debug.Log(player.playerId);
+        players.Add(playerObj);
     }
 }
