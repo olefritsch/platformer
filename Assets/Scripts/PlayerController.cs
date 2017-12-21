@@ -80,8 +80,10 @@ public class PlayerController : MonoBehaviour {
         if (extraGravity < 0)
             rb.AddForce(new Vector3(0, extraGravity, 0));
 
-        //HandleJoystickControlledGunRotation();
-        HandleMouseControlledGunRotation();
+        if (playerId == 1)
+			HandleMouseControlledGunRotation();
+        else 
+            HandleJoystickControlledGunRotation();
     }
 
     private void CheckInput()
