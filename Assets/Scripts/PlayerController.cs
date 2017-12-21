@@ -80,7 +80,7 @@ public class PlayerController : MonoBehaviour {
         if (extraGravity < 0)
             rb.AddForce(new Vector3(0, extraGravity, 0));
 
-        if (playerId == 1)
+        if (player.controllers.hasMouse)
 			HandleMouseControlledGunRotation();
         else 
             HandleJoystickControlledGunRotation();
@@ -121,7 +121,7 @@ public class PlayerController : MonoBehaviour {
         {
             float angle = Mathf.Atan2(-inputHorizontal, inputVertical) * Mathf.Rad2Deg;
             float rotateSpeed = 0;
-            float smoothAngle = Mathf.SmoothDampAngle(gun.eulerAngles.z, angle, ref rotateSpeed, 0.08f);
+            float smoothAngle = Mathf.SmoothDampAngle(gun.eulerAngles.z, angle, ref rotateSpeed, 0.06f);
             gun.rotation = Quaternion.Euler(new Vector3(0, 0, smoothAngle));
         }
     }
