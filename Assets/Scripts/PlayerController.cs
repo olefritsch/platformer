@@ -4,8 +4,6 @@ using Rewired;
 [RequireComponent(typeof(Rigidbody))]
 public class PlayerController : MonoBehaviour {
 
-    const string GroundIdentifierTag = "Ground";
-
     [HideInInspector]
     public int playerId = 0;
 
@@ -172,7 +170,7 @@ public class PlayerController : MonoBehaviour {
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.tag == GroundIdentifierTag)
+        if (collision.gameObject.tag == TagManager.GroundIdentifierTag)
         {
             jumpStreak = 0;
             this.canJump = true;

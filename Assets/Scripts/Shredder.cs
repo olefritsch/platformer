@@ -2,11 +2,9 @@
 
 public class Shredder : MonoBehaviour
 {
-    const string ProjectileIdentifierTag = "Projectile";
-
     private void OnTriggerEnter(Collider other)
     {
-        if (other.tag == ProjectileIdentifierTag)
+        if (other.tag == TagManager.ProjectileIdentifierTag)
             Destroy(other.gameObject);
     }
 }
