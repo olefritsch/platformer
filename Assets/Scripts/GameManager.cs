@@ -7,7 +7,6 @@ public class GameManager : MonoBehaviour {
     public static GameManager Instance = null;
 
     [SerializeField] GameObject playerPrefab;
-    [SerializeField] Ability[] abilities;
 
     public enum GameState { Menu, GameSetup, GamePlay, GameEnd }
     private GameState state;
@@ -37,11 +36,7 @@ public class GameManager : MonoBehaviour {
         // TODO: Allow players to choose abilities before game starts
         PlayerController player = playerObj.GetComponent<PlayerController>();
 
-        player.Ability = abilities[0];
-        player.Ability.Initialize(playerObj);
-
         player.playerId = players.Count;
-        Debug.Log(player.playerId);
         players.Add(playerObj);
     }
 }

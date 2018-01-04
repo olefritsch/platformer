@@ -22,19 +22,11 @@ public class PlayerController : MonoBehaviour {
     [Header("Firing")]
     [SerializeField] Transform gun;
     [SerializeField] GameObject projectilePrefab;
-    [SerializeField] Ability ability;
-    
-    public Ability Ability
-    {
-        get { return ability;  }
-        set
-        {
-            if (ability)
-                Debug.LogWarning("Ability for Player " + playerId + " has been overridden through Ability setter");
 
-            ability = value;
-        }
-    }
+    [Header("Ability")]
+    [SerializeField] float abilityCooldown = 1f;
+    [SerializeField] float explosionForce = 500f;
+    [SerializeField] float explosionRadius = 5f;
 
     private Player player;
     private Rigidbody rb;
@@ -45,14 +37,13 @@ public class PlayerController : MonoBehaviour {
     private bool canJump = true;
     private bool isJumping;
 
+    private float timeSinceLastAbility;
+
     // Use this for initialization
     void Start()
     {
         player = ReInput.players.GetPlayer(playerId);
         rb = GetComponent<Rigidbody>();
-
-        if (Ability != null)
-            Ability.Initialize(this.gameObject);
 
         extraGravity *= -1;
     }
@@ -94,7 +85,7 @@ public class PlayerController : MonoBehaviour {
         if (player.GetButtonDown("Fire"))
             Shoot();
 
-        if (player.GetButtonDown("Ability"))
+        if (player.GetButtonDown("Ability") && (Time.time - timeSinceLastAbility > abilityCooldown))
             UseAbility();
     }
 
@@ -165,7 +156,18 @@ public class PlayerController : MonoBehaviour {
 
     private void UseAbility()
     {
-        ability.TriggerAbility();
+        Collider[] colliders = Physics.OverlapSphere(transform.position, explosionRadius, 1 << LayerMask.NameToLayer("Players"));
+        foreach (Collider collider in colliders)
+        {
+            // Don't add force to self
+            if (collider.transform.root == transform)
+                continue;
+
+            Rigidbody rb = collider.GetComponentInParent<Rigidbody>();
+
+            if (rb != null)
+                rb.AddExplosionForce(explosionForce, this.transform.position, explosionRadius, 0.2f);
+        }
     }
 
     private void OnCollisionEnter(Collision collision)
