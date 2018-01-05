@@ -154,7 +154,9 @@ public class PlayerController : MonoBehaviour {
 
     private void UseAbility()
     {
-        Collider[] colliders = Physics.OverlapSphere(transform.position, explosionRadius, 1 << LayerMask.NameToLayer("Players"));
+		int playerLayer = 1 << LayerMask.NameToLayer(TagManager.PlayerLayer);
+		int projectileLayer = 1 << LayerMask.NameToLayer(TagManager.ProjectileLayer);
+		Collider[] colliders = Physics.OverlapSphere(transform.position, explosionRadius, playerLayer | projectileLayer);
         foreach (Collider collider in colliders)
         {
             // Don't add force to self
