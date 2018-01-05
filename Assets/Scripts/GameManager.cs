@@ -11,7 +11,7 @@ public class GameManager : MonoBehaviour {
     public enum GameState { Menu, GameSetup, GamePlay, GameEnd }
     private GameState state;
 
-    private List<GameObject> players;
+    private List<PlayerController> players;
 
     void Awake()
     {
@@ -23,7 +23,8 @@ public class GameManager : MonoBehaviour {
 
     void Start()
     {
-        players = new List<GameObject>();
+        Shredder.PlayerDeath += OnPlayerDeath;
+        players = new List<PlayerController>();
         OnPlayerJoin();
         OnPlayerJoin();
     }
@@ -37,6 +38,19 @@ public class GameManager : MonoBehaviour {
         PlayerController player = playerObj.GetComponent<PlayerController>();
 
         player.playerId = players.Count;
-        players.Add(playerObj);
+        players.Add(player);
+    }
+
+    public void OnPlayerDeath(int playerId)
+    {
+        for (int i=0, len=players.Count;  i<len; i++)
+        {
+            if (players[i].playerId == playerId)
+            {
+                PlayerController player = players[i];
+                player.GetComponent<Rigidbody>().velocity = Vector3.zero;
+                player.transform.position = new Vector3(0, 10, 0);
+            }
+        }
     }
 }

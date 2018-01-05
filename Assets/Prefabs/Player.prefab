@@ -38,7 +38,7 @@ GameObject:
   - component: {fileID: 114529672918367770}
   m_Layer: 8
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -252,7 +252,9 @@ MonoBehaviour:
   gun: {fileID: 4589927314014156}
   projectilePrefab: {fileID: 1567404158020960, guid: f48e35f05d9b04f42bf4ba0227254891,
     type: 2}
-  ability: {fileID: 11400000, guid: 4e6b36b82b917454292c6d7569104532, type: 2}
+  abilityCooldown: 1
+  explosionForce: 500
+  explosionRadius: 5
 --- !u!135 &135597338505949648
 SphereCollider:
   m_ObjectHideFlags: 1

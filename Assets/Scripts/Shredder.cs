@@ -2,9 +2,18 @@
 
 public class Shredder : MonoBehaviour
 {
+    public delegate void OnPlayerDeath(int playerId);
+    public static OnPlayerDeath PlayerDeath;
+
     private void OnTriggerEnter(Collider other)
     {
-        if (other.tag == TagManager.ProjectileIdentifierTag)
+        if (other.transform.root.tag == TagManager.ProjectileIdentifierTag)
             Destroy(other.gameObject);
+
+        else if (other.transform.root.tag == TagManager.PlayerIdentifierTag)
+        {
+            PlayerController player = other.transform.root.GetComponent<PlayerController>();
+            PlayerDeath(player.playerId);
+        }
     }
 }
