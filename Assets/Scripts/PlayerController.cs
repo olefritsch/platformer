@@ -30,12 +30,11 @@ public class PlayerController : MonoBehaviour {
     private Rigidbody rb;
 
     private float movementInput;
+	private float timeSinceLastAbility = 0;
     private float timeSinceLastJump = 0;
     private int jumpStreak = 0;
     private bool canJump = true;
     private bool isJumping;
-
-    private float timeSinceLastAbility;
 
     // Use this for initialization
     void Start()
@@ -44,6 +43,11 @@ public class PlayerController : MonoBehaviour {
         rb = GetComponent<Rigidbody>();
 
         extraGravity *= -1;
+
+        // Register for callbacks when the game state is changed
+        GameManager.OnGameStateChange += OnGameStateChange;
+        // TODO: Removed this once proper player joining/spawning has been implemented
+        OnGameStateChange(GameManager.Instance.GameState);
     }
 
     // Update is called once per frame
@@ -177,5 +181,18 @@ public class PlayerController : MonoBehaviour {
             jumpStreak = 0;
             this.canJump = true;
         }
+    }
+
+    // Enable corresponding control maps on game state change, disable all others
+    public void OnGameStateChange(GameState gameState)
+    {
+        player.controllers.maps.SetAllMapsEnabled(false);
+        player.controllers.maps.SetMapsEnabled(true, gameState.ToString());
+    }
+
+    private void OnDestroy()
+    {
+        // Deregister event handler to avoid memory leak
+        GameManager.OnGameStateChange -= OnGameStateChange;
     }
 }

@@ -1,15 +1,27 @@
 ﻿using UnityEngine;
-using System;
+using UnityEngine.SceneManagement;
 using System.Collections.Generic;
 
 public class GameManager : MonoBehaviour {
 
     public static GameManager Instance = null;
 
-    [SerializeField] GameObject playerPrefab;
+	public delegate void GameStateChanged(GameState gameState);
+	public static event GameStateChanged OnGameStateChange; 
 
-    public enum GameState { Menu, GameSetup, GamePlay, GameEnd }
-    private GameState state;
+	public GameState GameState 
+	{ 
+		get { return _gameState; }
+		private set 
+		{
+			_gameState = value;
+			if (OnGameStateChange != null)
+				OnGameStateChange(value);
+		}
+	}
+	private GameState _gameState;
+
+	[SerializeField] GameObject playerPrefab;
 
     private List<PlayerController> players;
 
@@ -23,18 +35,32 @@ public class GameManager : MonoBehaviour {
 
     void Start()
     {
+		if (SceneManager.GetActiveScene().name == "_Game")
+			GameState = GameState.Gameplay;
+		else
+			GameState = GameState.Setup;
+		
         Shredder.PlayerDeath += OnPlayerDeath;
         players = new List<PlayerController>();
-        OnPlayerJoin();
-        OnPlayerJoin();
+
+        // TODO: Removed this once proper player joining/spawning has been implemented
+        if (SceneManager.GetActiveScene().name == "_Game")
+        {
+            OnPlayerJoin();
+            OnPlayerJoin();   
+        }
     }
+
+	public void OnStartGame()
+	{
+		GameState = GameState.Gameplay;
+		SceneManager.LoadScene("_Game");
+	}
 
     public void OnPlayerJoin()
     {
         Vector3 spawnPos = new Vector3(-10f + (players.Count * 4), 0f, 0f);
         GameObject playerObj = Instantiate(playerPrefab, spawnPos, Quaternion.identity);
-        
-        // TODO: Allow players to choose abilities before game starts
         PlayerController player = playerObj.GetComponent<PlayerController>();
 
         player.playerId = players.Count;
