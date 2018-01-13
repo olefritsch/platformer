@@ -26,15 +26,20 @@ public class PlayerController : MonoBehaviour {
     [SerializeField] float explosionForce = 500f;
     [SerializeField] float explosionRadius = 5f;
 
+    // Reference variables
     private Player player;
     private Rigidbody rb;
 
+    // Input variables
     private float movementInput;
-	private float timeSinceLastAbility = 0;
+    private bool isJumping;
+    private bool isShooting;
+    private bool isUsingAbility;
+
+    private float timeSinceLastAbility = 0;
     private float timeSinceLastJump = 0;
     private int jumpStreak = 0;
     private bool canJump = true;
-    private bool isJumping;
 
     // Use this for initialization
     void Start()
@@ -56,7 +61,7 @@ public class PlayerController : MonoBehaviour {
         if (disabled)
             return;
 
-        CheckInput();
+        GetInput();
     }
 
     private void FixedUpdate()
@@ -64,31 +69,55 @@ public class PlayerController : MonoBehaviour {
         if (disabled)
             return;
 
-        Vector3 movementForce = CalculateMovementForce(movementInput);
-        rb.AddForce(movementForce);
-
-        if (isJumping)
-            Jump();
-
         if (extraGravity < 0)
             rb.AddForce(new Vector3(0, extraGravity, 0));
 
-        if (player.controllers.hasMouse)
-			HandleMouseControlledGunRotation();
-        else 
-            HandleJoystickControlledGunRotation();
+        ApplyInput();
     }
 
-    private void CheckInput()
+    // Get player input from Rewired, called in Update
+    private void GetInput()
     {
         movementInput = player.GetAxis("Movement");
-        isJumping = canJump && player.GetButton("Jump");
+
+        if (player.GetButton("Jump"))
+            isJumping = true;
 
         if (player.GetButtonDown("Fire"))
-            Shoot();
+            isShooting = true;
 
-        if (player.GetButtonDown("Ability") && (Time.time - timeSinceLastAbility > abilityCooldown))
+        if (player.GetButtonDown("Ability"))
+            isUsingAbility = true;
+    }
+
+    // Applies player input, called from FixedUpdate due to physics calculations
+    private void ApplyInput()
+    {
+        Vector3 movementForce = CalculateMovementForce(movementInput);
+        rb.AddForce(movementForce);
+
+        if (player.controllers.hasMouse)
+            HandleMouseControlledGunRotation();
+        else
+            HandleJoystickControlledGunRotation();
+
+        if (isJumping)
+        {
+            isJumping = false;
+            Jump();
+        }
+
+        if (isShooting)
+        {
+            isShooting = false;
+            Shoot();
+        }
+
+        if (isUsingAbility)
+        {
+            isUsingAbility = false;
             UseAbility();
+        }
     }
 
     private Vector3 CalculateMovementForce(float inputMovementSpeed)
@@ -136,15 +165,15 @@ public class PlayerController : MonoBehaviour {
 
     private void Jump()
     {
-        if (Time.time - timeSinceLastJump > jumpDelay)
-        {
-            rb.AddForce(0, jumpPower, 0);
-            timeSinceLastJump = Time.time;
-            jumpStreak++;
+        if (!canJump || Time.time - timeSinceLastJump < jumpDelay)
+            return;
 
-            if (jumpStreak >= jumpChainLimit)
-                canJump = false;
-        }
+        rb.AddForce(0, jumpPower, 0);
+        timeSinceLastJump = Time.time;
+        jumpStreak++;
+
+        if (jumpStreak >= jumpChainLimit)
+            canJump = false;
     }
 
     private void Shoot()
@@ -158,6 +187,9 @@ public class PlayerController : MonoBehaviour {
 
     private void UseAbility()
     {
+        if (Time.time - timeSinceLastAbility < abilityCooldown)
+            return;
+
 		int playerLayer = 1 << LayerMask.NameToLayer(TagManager.PlayerLayer);
 		int projectileLayer = 1 << LayerMask.NameToLayer(TagManager.ProjectileLayer);
 		Collider[] colliders = Physics.OverlapSphere(transform.position, explosionRadius, playerLayer | projectileLayer);
