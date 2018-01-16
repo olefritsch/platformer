@@ -31,6 +31,8 @@ public class GameManager : MonoBehaviour {
             Instance = this;
         else if (Instance != this)
             Destroy(this.gameObject);
+
+        DontDestroyOnLoad(this.gameObject);
     }
 
     void Start()
@@ -44,11 +46,11 @@ public class GameManager : MonoBehaviour {
         players = new List<PlayerController>();
 
         // TODO: Removed this once proper player joining/spawning has been implemented
-        if (SceneManager.GetActiveScene().name == "_Game")
-        {
+        //if (SceneManager.GetActiveScene().name == "_Game")
+        //{
             OnPlayerJoin();
             OnPlayerJoin();   
-        }
+        //}
     }
 
 	public void OnStartGame()
@@ -59,7 +61,7 @@ public class GameManager : MonoBehaviour {
 
     public void OnPlayerJoin()
     {
-        Vector3 spawnPos = new Vector3(-10f + (players.Count * 4), 0f, 0f);
+        Vector3 spawnPos = new Vector3(-8f + (players.Count * 5), 4f, 0f);
         GameObject playerObj = Instantiate(playerPrefab, spawnPos, Quaternion.identity);
         PlayerController player = playerObj.GetComponent<PlayerController>();
 

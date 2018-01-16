@@ -29,6 +29,8 @@ public class PlayerController : MonoBehaviour {
     // Reference variables
     private Player player;
     private Rigidbody rb;
+    private Renderer primaryRenderer;
+    private Renderer secondaryRenderer;
 
     // Input variables
     private float movementInput;
@@ -45,7 +47,15 @@ public class PlayerController : MonoBehaviour {
     void Start()
     {
         player = ReInput.players.GetPlayer(playerId);
+        player.AddInputEventDelegate(OnChangePrimaryColor, UpdateLoopType.Update, InputActionEventType.ButtonJustPressed, "Next Primary Color");
+        player.AddInputEventDelegate(OnChangeSecondaryColor, UpdateLoopType.Update, InputActionEventType.ButtonJustPressed, "Next Secondary Color");
+
         rb = GetComponent<Rigidbody>();
+
+        // We can assume that the primary renderer will be found first as it is located higher up in the hierachy
+        Renderer[] renderers = GetComponentsInChildren<Renderer>();
+        primaryRenderer = renderers[0];
+        secondaryRenderer = renderers[1];
 
         extraGravity *= -1;
 
@@ -53,6 +63,8 @@ public class PlayerController : MonoBehaviour {
         GameManager.OnGameStateChange += OnGameStateChange;
         // TODO: Removed this once proper player joining/spawning has been implemented
         OnGameStateChange(GameManager.Instance.GameState);
+
+        DontDestroyOnLoad(this.gameObject);
     }
 
     // Update is called once per frame
@@ -60,7 +72,7 @@ public class PlayerController : MonoBehaviour {
     {
         if (disabled)
             return;
-
+        
         GetInput();
     }
 
@@ -222,9 +234,22 @@ public class PlayerController : MonoBehaviour {
         player.controllers.maps.SetMapsEnabled(true, gameState.ToString());
     }
 
+    private void OnChangePrimaryColor(InputActionEventData data) 
+    {
+        primaryRenderer.material.color = Random.ColorHSV();
+    }
+
+    private void OnChangeSecondaryColor(InputActionEventData data)
+    {
+        secondaryRenderer.material.color = Random.ColorHSV();
+    }
+
     private void OnDestroy()
     {
         // Deregister event handler to avoid memory leak
         GameManager.OnGameStateChange -= OnGameStateChange;
+
+        player.RemoveInputEventDelegate(OnChangePrimaryColor);
+        player.RemoveInputEventDelegate(OnChangeSecondaryColor);
     }
 }

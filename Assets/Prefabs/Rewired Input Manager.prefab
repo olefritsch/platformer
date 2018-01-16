@@ -422,8 +422,8 @@ MonoBehaviour:
       _userAssignable: 1
       _checkConflictsWithAllCategories: 1
       _checkConflictsCategoryIds: 
-    - _name: Menu
-      _descriptiveName: Menu Interaction
+    - _name: Setup
+      _descriptiveName: Game Setup
       _tag: 
       _id: 1
       _userAssignable: 1
@@ -1035,7 +1035,7 @@ MonoBehaviour:
     customControllerMaps: []
     customControllers: []
     playerIdCounter: 5
-    actionIdCounter: 10
+    actionIdCounter: 12
     actionCategoryIdCounter: 2
     inputBehaviorIdCounter: 1
     mapCategoryIdCounter: 3
