@@ -70,7 +70,7 @@ public class GameManager : MonoBehaviour {
         players.Add(player);
     }
 
-    public void OnPlayerDeath(int playerId)
+	public void OnPlayerDeath(int playerId)
     {
         for (int i=0, len=players.Count;  i<len; i++)
         {

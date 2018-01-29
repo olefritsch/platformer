@@ -4,12 +4,6 @@ using Rewired;
 [RequireComponent(typeof(Rigidbody))]
 public class PlayerController : MonoBehaviour {
 
-    [HideInInspector]
-    public int playerId = 0;
-
-    [Header("Testing Only")]        // For testing purposes only,
-    public bool disabled;           // Disables player controls
-
     [Header("Movement")]
     [SerializeField] float maxMovementSpeed = 10f;
     [SerializeField] float jumpPower = 500f;
@@ -25,6 +19,9 @@ public class PlayerController : MonoBehaviour {
     [SerializeField] float abilityCooldown = 1f;
     [SerializeField] float explosionForce = 500f;
     [SerializeField] float explosionRadius = 5f;
+
+	[HideInInspector]
+	public int playerId = 0;
 
     // Reference variables
     private Player player;
@@ -46,7 +43,7 @@ public class PlayerController : MonoBehaviour {
     // Use this for initialization
     void Start()
     {
-        player = ReInput.players.GetPlayer(playerId);
+		player = ReInput.players.GetPlayer(playerId);
         player.AddInputEventDelegate(OnChangePrimaryColor, UpdateLoopType.Update, InputActionEventType.ButtonJustPressed, "Next Primary Color");
         player.AddInputEventDelegate(OnChangeSecondaryColor, UpdateLoopType.Update, InputActionEventType.ButtonJustPressed, "Next Secondary Color");
 
@@ -70,17 +67,11 @@ public class PlayerController : MonoBehaviour {
     // Update is called once per frame
     void Update()
     {
-        if (disabled)
-            return;
-        
         GetInput();
     }
 
     private void FixedUpdate()
     {
-        if (disabled)
-            return;
-
         if (extraGravity < 0)
             rb.AddForce(new Vector3(0, extraGravity, 0));
 
