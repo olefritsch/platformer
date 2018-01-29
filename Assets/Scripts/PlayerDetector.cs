@@ -4,7 +4,10 @@ using Rewired;
 
 public class PlayerDetector : MonoBehaviour {
 
-    public int maxPlayers = 4;
+	public delegate void OnPlayerJoinGame(int playerId);
+	public static OnPlayerJoinGame OnPlayerJoin;
+
+	private int maxPlayers = 4;
     private int rewiredPlayerIdCounter = 0;
 
     private List<int> assignedJoysticks;
@@ -19,6 +22,8 @@ public class PlayerDetector : MonoBehaviour {
 
     void Start()
     {
+		maxPlayers = ReInput.players.playerCount;
+
         // Assign all Joysticks to the System Player initially removing assignment from other Players.
         systemPlayer = ReInput.players.GetSystemPlayer();
         AssignAllJoysticksToSystemPlayer();
@@ -57,6 +62,11 @@ public class PlayerDetector : MonoBehaviour {
 
     void AssignNextPlayer()
     {
+		if(rewiredPlayerIdCounter >= maxPlayers) {
+			Debug.LogWarning("Max player limit already reached!");
+			return;
+		}
+
         Player player = ReInput.players.GetPlayer(GetNextGamePlayerId());
 
         // Determine which Controller was used to generate the JoinGame Action
@@ -72,12 +82,22 @@ public class PlayerDetector : MonoBehaviour {
                 // Disable KB/Mouse Assignment category in System Player so it doesn't assign through the keyboard/mouse anymore
                 systemPlayer.controllers.maps.SetMapsEnabled(false, ControllerType.Keyboard, "Assignment");
                 systemPlayer.controllers.maps.SetMapsEnabled(false, ControllerType.Mouse, "Assignment");
+
+				// Broadcast OnPlayerJoin event
+				if (OnPlayerJoin != null) 
+					OnPlayerJoin (player.id);
+
                 break;
             }
             else if (source.controllerType == ControllerType.Joystick)
             {
                 // Assign the joystick to the Player. This will also un-assign it from System Player
                 AssignJoystickToPlayer(player, source.controller as Joystick);
+
+				// Broadcast OnPlayerJoin event
+				if (OnPlayerJoin != null) 
+					OnPlayerJoin (player.id);
+
                 break;
             }
             else

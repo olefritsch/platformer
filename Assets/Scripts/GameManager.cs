@@ -41,16 +41,17 @@ public class GameManager : MonoBehaviour {
 			GameState = GameState.Gameplay;
 		else
 			GameState = GameState.Setup;
-		
+
+		PlayerDetector.OnPlayerJoin += OnPlayerJoin;
         Shredder.PlayerDeath += OnPlayerDeath;
         players = new List<PlayerController>();
 
         // TODO: Removed this once proper player joining/spawning has been implemented
-        //if (SceneManager.GetActiveScene().name == "_Game")
-        //{
-            OnPlayerJoin();
-            OnPlayerJoin();   
-        //}
+        if (SceneManager.GetActiveScene().name == "_Game")
+        {
+            OnPlayerJoin(0);
+            OnPlayerJoin(1);   
+        }
     }
 
 	public void OnStartGame()
@@ -59,13 +60,13 @@ public class GameManager : MonoBehaviour {
 		SceneManager.LoadScene("_Game");
 	}
 
-    public void OnPlayerJoin()
+	public void OnPlayerJoin(int playerId)
     {
-        Vector3 spawnPos = new Vector3(-8f + (players.Count * 5), 4f, 0f);
+        Vector3 spawnPos = new Vector3(-8f + (playerId * 5), 4f, 0f);
         GameObject playerObj = Instantiate(playerPrefab, spawnPos, Quaternion.identity);
         PlayerController player = playerObj.GetComponent<PlayerController>();
 
-        player.playerId = players.Count;
+		player.playerId = playerId;
         players.Add(player);
     }
 
