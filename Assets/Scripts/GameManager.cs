@@ -9,6 +9,7 @@ public class GameManager : MonoBehaviour {
 	public delegate void GameStateChanged(GameState gameState);
 	public static event GameStateChanged OnGameStateChange; 
 
+	private GameState _gameState;
 	public GameState GameState 
 	{ 
 		get { return _gameState; }
@@ -19,10 +20,10 @@ public class GameManager : MonoBehaviour {
 				OnGameStateChange(value);
 		}
 	}
-	private GameState _gameState;
 
 	[SerializeField] GameObject playerPrefab;
 
+	private PlayerDetector playerDetector;
     private List<PlayerController> players;
 
     void Awake()
@@ -37,6 +38,9 @@ public class GameManager : MonoBehaviour {
 
     void Start()
     {
+		playerDetector = GetComponent<PlayerDetector>();
+		players = new List<PlayerController>();
+
 		if (SceneManager.GetActiveScene().name == "_Game")
 			GameState = GameState.Gameplay;
 		else
@@ -44,19 +48,15 @@ public class GameManager : MonoBehaviour {
 
 		PlayerDetector.OnPlayerJoin += OnPlayerJoin;
         Shredder.PlayerDeath += OnPlayerDeath;
-        players = new List<PlayerController>();
-
-        // TODO: Removed this once proper player joining/spawning has been implemented
-        if (SceneManager.GetActiveScene().name == "_Game")
-        {
-            OnPlayerJoin(0);
-            OnPlayerJoin(1);   
-        }
     }
 
 	public void OnStartGame()
 	{
 		GameState = GameState.Gameplay;
+
+		// We don't want to check for new players if game is in progress
+		playerDetector.enabled = false;
+
 		SceneManager.LoadScene("_Game");
 	}
 
