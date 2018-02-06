@@ -36,6 +36,7 @@ GameObject:
   - component: {fileID: 4700347953183652}
   - component: {fileID: 54027508876471312}
   - component: {fileID: 114529672918367770}
+  - component: {fileID: 114411534808822780}
   m_Layer: 8
   m_Name: Player
   m_TagString: Player
@@ -231,6 +232,18 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 120
   m_CollisionDetection: 1
+--- !u!114 &114411534808822780
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1351350414123914}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 185aed6c307ff46978d7d38927a667bb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  runtimeSet: {fileID: 11400000, guid: b6f26422325734fd9a7ddc6010bd7b33, type: 2}
 --- !u!114 &114529672918367770
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -242,8 +255,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b23d54ddc5acb5945b96006faf626f62, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerId: 0
-  disabled: 0
   maxMovementSpeed: 10
   jumpPower: 500
   jumpDelay: 0.4
@@ -255,6 +266,7 @@ MonoBehaviour:
   abilityCooldown: 1
   explosionForce: 500
   explosionRadius: 5
+  playerId: 0
 --- !u!135 &135597338505949648
 SphereCollider:
   m_ObjectHideFlags: 1
