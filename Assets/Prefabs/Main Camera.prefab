@@ -74,6 +74,7 @@ Camera:
   m_TargetEye: 3
   m_HDR: 1
   m_AllowMSAA: 1
+  m_AllowDynamicResolution: 0
   m_ForceIntoRT: 0
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
@@ -96,6 +97,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2db0ae5e3c3d5cd4b96347c8d5758a0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  targets: {fileID: 11400000, guid: b6f26422325734fd9a7ddc6010bd7b33, type: 2}
+  offset: {x: 0, y: 0, z: -15}
+  smoothTime: 0.5
+  minZoom: 80
+  maxZoom: 50
+  zoomLimiter: 50
 --- !u!124 &124215340137576008
 Behaviour:
   m_ObjectHideFlags: 1

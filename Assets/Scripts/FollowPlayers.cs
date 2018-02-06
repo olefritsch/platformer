@@ -1,35 +1,40 @@
 ﻿using UnityEngine;
 
-public class FollowPlayers : MonoBehaviour {
+[RequireComponent(typeof(Camera))]
+public class FollowPlayers : MonoBehaviour
+{
+    [SerializeField] TransformRuntimeSet targets;
 
-    private PlayerController[] players;
+    [SerializeField] Vector3 offset = new Vector3(0f, 0f, -15f);
+    [SerializeField] float smoothTime = 0.5f;
 
-    // Use this for initialization
+    [SerializeField] float minZoom = 70f;
+    [SerializeField] float maxZoom = 30f;
+    [SerializeField] float zoomLimiter = 50f;
+
+    private Camera cam;
+    private Vector3 _refVelocity;
+    
     void Start()
     {
-        players = FindObjectsOfType<PlayerController>();
+        cam = GetComponent<Camera>();    
     }
 
-    private void FixedUpdate()
+    private void LateUpdate()
     {
-        Vector3 playerPositions = Vector3.zero;
+        if (targets.Count < 1)
+            return;
 
-        for (int i=0, len=players.Length; i<len; i++)
+        Bounds bounds = new Bounds(targets[0].position, Vector3.zero);
+        for (int i = 0; i < targets.Count; i++)
         {
-            PlayerController player = players[i];
-            playerPositions += player.transform.position;
+            bounds.Encapsulate(targets[i].position);
         }
 
-        playerPositions = playerPositions.normalized / 5;
-        playerPositions.y += 5;
-
-        float speedX = 0;
-        float speedY = 0;
-
-        float posX = Mathf.SmoothDamp(transform.position.x, playerPositions.x, ref speedX, 0.5f);
-        float posY = Mathf.SmoothDamp(transform.position.y, playerPositions.y, ref speedY, 0.5f);
-
-        transform.position = new Vector3(posX, posY, transform.position.z);
-        transform.LookAt(new Vector3(posX, posY, playerPositions.z));
+        // Smoothly update camera position
+        transform.position = Vector3.SmoothDamp(transform.position, bounds.center + offset, ref _refVelocity, smoothTime);
+        
+        // Lerp between max/min zoom based on distance between players
+        cam.fieldOfView = Mathf.Lerp(maxZoom, minZoom, bounds.size.x / zoomLimiter);
     }
 }
