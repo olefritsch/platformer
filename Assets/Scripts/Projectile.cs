@@ -1,38 +1,35 @@
 ﻿using UnityEngine;
+using System.Collections;
 
 [RequireComponent(typeof(Rigidbody))]
 public class Projectile : MonoBehaviour
 {
-
-    [SerializeField] float initialSpeed = 200;
-    [SerializeField] float lifetime = 5;
-
-    private Rigidbody rb;
-    private float timeInstatiated;
-    private float lerpT;
+    [SerializeField] float initialSpeed = 200f;
+    [SerializeField] float lifetime = 5f;
+	[SerializeField] float deathtime = 0.5f;
 
     // Use this for initialization
     void Start()
     {
-        rb = GetComponent<Rigidbody>();
-        rb.AddForce(this.transform.up * initialSpeed);
-
-        timeInstatiated = Time.time;
+        GetComponent<Rigidbody>().AddForce(this.transform.up * initialSpeed);
+		StartCoroutine(Die());
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        if (Time.time - timeInstatiated > lifetime)
-        {
-            float scale = Mathf.Lerp(this.transform.localScale.x, 0, lerpT);
-            lerpT += Time.deltaTime;
+	private IEnumerator Die() 
+	{
+		yield return new WaitForSeconds(lifetime);
 
-            if (scale < 0.05)
-                Destroy(this.gameObject);
-            else
-                this.transform.localScale = new Vector3(scale, scale, scale);
-        }
-    }
+		float i = 0;
+
+		while (i < 1) 
+		{
+			this.transform.localScale = Vector3.Lerp(this.transform.localScale, Vector3.zero, i);
+			i += Time.deltaTime / deathtime;
+			yield return null;
+		}
+
+		Destroy(this.gameObject);
+	}
+
 }
 
